@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">新建部门</div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group" style="margin-left:10px">
+                    <label>部门</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="部门" name="title"/>
+                </div>
+                <button style="margin-left: 10px ;margin-bottom:20px;" type="submit" class="btn btn-primary">提交</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,201 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">柱状图</div>
+        <div class="panel-body">
+            <div id="m2" style="width: 100%;height: 400px;"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-default">
+        <div class="panel-heading">折线图</div>
+        <div class="panel-body">
+            <div id="m1" style="width: 100%;height: 400px;"></div>
+        </div>
+    </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-default">
+        <div class="panel-heading">饼图</div>
+        <div class="panel-body">
+            <div id="m3" style="width: 100%;height: 400px;"></div>
+        </div>
+    </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/echarts.js' %}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            initBar();
+            iniPie();
+            initZhe();
+        })
+
+        function initBar() {
+              // 基于准备好的dom，初始化echarts实例
+              var myChart = echarts.init(document.getElementById('m2'));
+
+              // 指定图表的配置项和数据
+              var option = {
+                title: {
+                  text: '员工业绩分布图'
+                },
+                tooltip: {},
+                legend: {
+                  data: []//后台获取
+                },
+                xAxis: {
+                  data: []//后台获取
+                },
+                yAxis: {},
+                series: []//后台获取
+              };
+
+              $.ajax({
+                  url: "/chart/bar/",
+                  type: "get",
+                  dataType: "JSON",
+                  success: function (res){
+                    //将后台返回的数据，更新到option中
+                    if (res.status) {
+                        option.legend.data = res.data.legend;
+                        option.xAxis.data = res.data.x_axis;
+                        option.series = res.data.series_list;
+                    }
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                  }
+              })
+        }
+
+        function iniPie() {
+              // 基于准备好的dom，初始化echarts实例
+              var myChart = echarts.init(document.getElementById('m3'));
+
+              // 指定图表的配置项和数据
+              var option = {
+                  title: {
+                    text: '部门预算占比',
+                    subtext: '香茄鱼分公司',
+                    left: 'center'
+                  },
+                  tooltip: {
+                    trigger: 'item'
+                  },
+                  legend: {
+                    bottom: 0
+                  },
+                  series: [
+                    {
+                      name: '预算',
+                      type: 'pie',
+                      radius: '50%',
+                      data: [
+                        { value: 1048, name: 'IT部门' },
+                        { value: 735, name: '运营' },
+                        { value: 580, name: '新媒体' },
+                      ],
+                      emphasis: {
+                        itemStyle: {
+                          shadowBlur: 10,
+                          shadowOffsetX: 0,
+                          shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                      }
+                    }
+                  ]
+                };
+              // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+        }
+
+        function initZhe() {
+              // 基于准备好的dom，初始化echarts实例
+              var myChart = echarts.init(document.getElementById('m1'));
+
+              // 指定图表的配置项和数据
+              var option = {
+                  title: {
+                    text: 'Stacked Line'
+                  },
+                  tooltip: {
+                    trigger: 'axis'
+                  },
+                  legend: {
+                    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
+                    bottom: 0
+                  },
+                  grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                  },
+                  toolbox: {
+                    feature: {
+                      saveAsImage: {}
+                    }
+                  },
+                  xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                  },
+                  yAxis: {
+                    type: 'value'
+                  },
+                  series: [
+                    {
+                      name: 'Email',
+                      type: 'line',
+                      stack: 'Total',
+                      data: [120, 132, 101, 134, 90, 230, 210]
+                    },
+                    {
+                      name: 'Union Ads',
+                      type: 'line',
+                      stack: 'Total',
+                      data: [220, 182, 191, 234, 290, 330, 310]
+                    },
+                    {
+                      name: 'Video Ads',
+                      type: 'line',
+                      stack: 'Total',
+                      data: [150, 232, 201, 154, 190, 330, 410]
+                    },
+                    {
+                      name: 'Direct',
+                      type: 'line',
+                      stack: 'Total',
+                      data: [320, 332, 301, 334, 390, 330, 320]
+                    },
+                    {
+                      name: 'Search Engine',
+                      type: 'line',
+                      stack: 'Total',
+                      data: [820, 932, 901, 934, 290, 330, 320]
+                    }
+                  ]
+                };
+              // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+        }
+
+
+
+    </script>
+{% endblock %}
